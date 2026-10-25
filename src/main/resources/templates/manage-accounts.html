@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Accounts</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Accounts</h2>
+        <a href="/admin/dashboard" class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    <ul class="nav nav-pills mb-3" id="accountTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    id="students-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#students"
+                    type="button"
+                    role="tab">
+                Students
+            </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="teachers-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#teachers"
+                    type="button"
+                    role="tab">
+                Teachers
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="students" role="tabpanel">
+            <h4 class="mb-3">Student Accounts</h4>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+							<th>ID</th>
+							<th>Full Name</th>
+							<th>Surname</th>
+							<th>Email</th>
+							<th>ID Number</th>
+							<th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+						<tr th:each="account : ${users}"
+						    th:if="${account.role.name() == 'STUDENT'}">
+						    <td th:text="${account.id}"></td>
+						    <td th:text="${account.name}"></td>
+						    <td th:text="${account.surname}"></td>
+						    <td th:text="${account.email}"></td>
+						    <td th:text="${account.idNumber}"></td>
+						    <td>
+						        <form th:action="@{/admin/accounts/delete/{id}(id=${account.id})}"
+						              method="post"
+						              onsubmit="return confirm('Are you sure you want to remove this student account?');">
+						            <button type="submit" class="btn btn-danger btn-sm">
+						                Remove
+						            </button>
+						        </form>
+						    </td>
+						</tr>
+
+                        <tr th:if="${#lists.isEmpty(users.?[role.name() == 'STUDENT'])}">
+                            <td colspan="5" class="text-center">
+                                No student accounts found.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="teachers" role="tabpanel">
+            <h4 class="mb-3">Teacher Accounts</h4>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+							<th>ID</th>
+							<th>Full Name</th>
+							<th>Surname</th>
+							<th>Email</th>
+							<th>ID Number</th>
+							<th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+						<tr th:each="account : ${users}"
+						    th:if="${account.role.name() == 'TEACHER'}">
+						    <td th:text="${account.id}"></td>
+						    <td th:text="${account.name}"></td>
+						    <td th:text="${account.surname}"></td>
+						    <td th:text="${account.email}"></td>
+						    <td th:text="${account.idNumber}"></td>
+						    <td>
+						        <form th:action="@{/admin/accounts/delete/{id}(id=${account.id})}"
+						              method="post"
+						              onsubmit="return confirm('Are you sure you want to remove this teacher account?');">
+						            <button type="submit" class="btn btn-danger btn-sm">
+						                Remove
+						            </button>
+						        </form>
+						    </td>
+						</tr>
+
+                        <tr th:if="${#lists.isEmpty(users.?[role.name() == 'TEACHER'])}">
+                            <td colspan="5" class="text-center">
+                                No teacher accounts found.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

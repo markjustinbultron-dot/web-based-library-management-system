@@ -1,0 +1,78 @@
+package com.library.model;
+
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
+@Entity
+@Table(name = "transactions")
+public class Transaction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
+
+    private LocalDate borrowDate;
+    private LocalDate dueDate;
+    private LocalDate returnDate;
+    private boolean returned;
+    private double penaltyFee;
+
+    public Transaction() {}
+
+    public Transaction(User user, Book book, LocalDate borrowDate, LocalDate dueDate) {
+        this.user = user;
+        this.book = book;
+        this.borrowDate = borrowDate;
+        this.dueDate = dueDate;
+        this.returned = false;
+        this.penaltyFee = 0.0;
+    }
+
+    // Dynamic penalty calculation: 25 pesos per day overdue for physical books
+    public double calculatePenalty() {
+        if (book.getBookType() == BookType.EBOOK) {
+            return 0.0; // E-books have no penalty fees
+        }
+        
+        LocalDate checkDate = returned ? returnDate : LocalDate.now();
+        if (checkDate != null && checkDate.isAfter(dueDate)) {
+            long daysOverdue = ChronoUnit.DAYS.between(dueDate, checkDate);
+            return daysOverdue * 25.0;
+        }
+        return 0.0;
+    }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public Book getBook() { return book; }
+    public void setBook(Book book) { this.book = book; }
+
+    public LocalDate getBorrowDate() { return borrowDate; }
+    public void setBorrowDate(LocalDate borrowDate) { this.borrowDate = borrowDate; }
+
+    public LocalDate getDueDate() { return dueDate; }
+    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+
+    public LocalDate getReturnDate() { return returnDate; }
+    public void setReturnDate(LocalDate returnDate) { this.returnDate = returnDate; }
+
+    public boolean isReturned() { return returned; }
+    public void setReturned(boolean returned) { this.returned = returned; }
+
+    public double getPenaltyFee() { return calculatePenalty(); }
+    public void setPenaltyFee(double penaltyFee) { this.penaltyFee = penaltyFee; }
+}

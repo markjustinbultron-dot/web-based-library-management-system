@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Book - Library System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Add New Book to Inventory</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Added enctype="multipart/form-data" -->
+                    <form th:action="@{/admin/books/add}" th:object="${book}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Title</label>
+                            <input type="text" th:field="*{title}" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Author</label>
+                            <input type="text" th:field="*{author}" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Book Type</label>
+                            <select id="bookTypeSelect" th:field="*{bookType}" class="form-select" onchange="togglePdfInput()" required>
+                                <option value="PHYSICAL">Physical Book</option>
+                                <option value="EBOOK">E-Book</option>
+                            </select>
+                        </div>
+
+                        <!-- PDF Upload Container (Dynamic show/hide) -->
+                        <div class="mb-3 d-none" id="pdfUploadContainer">
+                            <label class="form-label fw-bold">Upload E-Book File (.pdf)</label>
+                            <input type="file" name="pdfFile" accept="application/pdf" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Genre</label>
+                            <input type="text" th:field="*{genre}" class="form-control" placeholder="Programming, Fiction, etc." required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">ISBN</label>
+                            <input type="text" th:field="*{isbn}" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Total Copies</label>
+                            <input type="number" th:field="*{totalCopies}" class="form-control" min="1" required />
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Save Book</button>
+                        <a href="/admin/dashboard" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePdfInput() {
+        const bookType = document.getElementById("bookTypeSelect").value;
+        const pdfContainer = document.getElementById("pdfUploadContainer");
+        if (bookType === "EBOOK") {
+            pdfContainer.classList.remove("d-none");
+        } else {
+            pdfContainer.classList.add("d-none");
+        }
+    }
+</script>
+
+</body>
+</html>
