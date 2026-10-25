@@ -27,7 +27,9 @@ public class DataInitializer implements CommandLineRunner {
                 "admin@library.com",
                 "ADMIN001",
                 "0000000000", // Phone number added here to match constructor
-                passwordEncoder.encode("admin123"),
+                passwordEncoder.encode(
+                	    System.getenv().getOrDefault("ADMIN_INITIAL_PASSWORD", "admin123")
+                	),
                 Role.ADMIN
             );
             userRepository.save(admin);
